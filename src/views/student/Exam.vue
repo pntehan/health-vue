@@ -16,7 +16,7 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary">
+            <el-button type="primary" @click="calcScore">
               交卷
             </el-button>
           </el-form-item>
@@ -38,8 +38,8 @@
         <p>6. 尊重隐私。测评结果将严格保密,请放心如实作答,不必担心隐私受损。</p>
         <p>祝您测评顺利!坦诚作答,以求获得可靠的评估结果,从而更好地了解自己。</p>
         <template #footer>
-          <h2>评测得分: {{ score }}</h2>
-          <el-progress type="circle" :percentage="score" />
+          <h2>评测得分: {{ f_score }}</h2>
+          <el-progress type="circle" :percentage="f_score" />
         </template>
       </el-card>
     </div>
@@ -54,40 +54,11 @@ export default {
         { id: 0, question: '你感到孤单吗？', answer: '' },
         { id: 1, question: '你感到孤单吗？', answer: '' },
         { id: 2, question: '你感到孤单吗？', answer: '' },
-        { id: 3, question: '你感到孤单吗？', answer: '' },
-        { id: 1, question: '你感到孤单吗？', answer: '' },
-        { id: 2, question: '你感到孤单吗？', answer: '' },
-        { id: 3, question: '你感到孤单吗？', answer: '' },
-        { id: 1, question: '你感到孤单吗？', answer: '' },
-        { id: 2, question: '你感到孤单吗？', answer: '' },
-        { id: 3, question: '你感到孤单吗？', answer: '' },
-        { id: 1, question: '你感到孤单吗？', answer: '' },
-        { id: 2, question: '你感到孤单吗？', answer: '' },
-        { id: 3, question: '你感到孤单吗？', answer: '' },
-        { id: 1, question: '你感到孤单吗？', answer: '' },
-        { id: 2, question: '你感到孤单吗？', answer: '' },
-        { id: 3, question: '你感到孤单吗？', answer: '' },
-        { id: 1, question: '你感到孤单吗？', answer: '' },
-        { id: 2, question: '你感到孤单吗？', answer: '' },
-        { id: 3, question: '你感到孤单吗？', answer: '' },
-        { id: 1, question: '你感到孤单吗？', answer: '' },
-        { id: 2, question: '你感到孤单吗？', answer: '' },
-        { id: 3, question: '你感到孤单吗？', answer: '' },
-        { id: 1, question: '你感到孤单吗？', answer: '' },
-        { id: 2, question: '你感到孤单吗？', answer: '' },
-        { id: 3, question: '你感到孤单吗？', answer: '' },
-        { id: 1, question: '你感到孤单吗？', answer: '' },
-        { id: 2, question: '你感到孤单吗？', answer: '' },
-        { id: 3, question: '你感到孤单吗？', answer: '' },
-        { id: 1, question: '你感到孤单吗？', answer: '' },
-        { id: 2, question: '你感到孤单吗？', answer: '' },
-        { id: 3, question: '你感到孤单吗？', answer: '' },
-        { id: 1, question: '你感到孤单吗？', answer: '' },
-        { id: 2, question: '你感到孤单吗？', answer: '' },
         { id: 3, question: '你感到孤单吗？', answer: '' }
       ],
       options: ['很符合', '比较符合', '没有感觉', '不太符合', '不符合'],
-      score: 0
+      scores: [10, 8, 6, 3, 0],
+      f_score: 0
     };
   },
 
@@ -95,6 +66,23 @@ export default {
   },
 
   methods: {
+    calcScore() {
+      // 校验空值
+      let score = 0
+      for (let item of this.data_list) {
+        console.log(item.answer)
+        if (!item.answer) {
+          this.$message.error('还有题没有做完~')
+          return
+        }
+        else {
+          score = score + this.scores[this.options.indexOf(item.answer)]
+        }
+      }
+      // 计算得分
+      let total = 10 * this.data_list.length
+      this.f_score = (score / total * 100).toFixed(2)
+    }
   }
 }
 </script>

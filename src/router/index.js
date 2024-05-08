@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 
 const routes = [
-  // 学术部分
+  // 学生部分
   {
     path: '/',
     name: '用户',
@@ -13,14 +13,81 @@ const routes = [
         component: () => import('@/views/student/Home.vue')
       },
       {
+        path: "/exam",
+        name: "exam",
+        component: () => import('@/views/student/Exam.vue')
+      },
+      {
         path: "/announcement",
         name: "announcement",
         component: () => import('@/views/student/Announcement.vue')
       },
       {
-        path: "/exam",
-        name: "exam",
-        component: () => import('@/views/student/Exam.vue')
+        path: "/new",
+        name: "new",
+        component: () => import('@/views/student/New.vue')
+      },
+      {
+        path: "/new/:id",
+        name: "newDetail",
+        component: () => import("@/views/student/NewDetail.vue")
+      },
+      {
+        path: "/book",
+        name: "book",
+        component: () => import("@/views/student/Book.vue")
+      },
+      {
+        path: "/consult",
+        name: "consult",
+        component: () => import("@/views/student/Consult.vue")
+      },
+      {
+        path: "/user",
+        name: "user",
+        component: () => import("@/views/student/User.vue")
+      },
+      {
+        path: "/star",
+        name: "star",
+        component: () => import("@/views/student/Star.vue")
+      }
+    ]
+  },
+  // 老师部分
+  {
+    path: '/teacher',
+    component: () => import("@/components/TeacherLayout.vue"),
+    children: [
+      {
+        path: '',
+        name: 'Dashboard',
+        component: () => import("@/views/teacher/Dashboard.vue"),
+        meta: { menuIndex: '/teacher' }
+      },
+      {
+        path: 'appointments',
+        name: 'Appointments',
+        component: () => import("@/views/teacher/Appointments.vue"),
+        meta: { menuIndex: '/teacher/appointments' }
+      },
+      {
+        path: 'psychTests',
+        name: 'PsychTests',
+        component: () => import("@/views/teacher/PsychTests.vue"),
+        meta: { menuIndex: '/teacher/psychTests' }
+      },
+      {
+        path: 'consult',
+        name: 'Consult',
+        component: () => import("@/views/teacher/Consult.vue"),
+        meta: { menuIndex: '/teacher/consult' }
+      },
+      {
+        path: 'feedback',
+        name: 'Feedback',
+        component: () => import("@/views/teacher/Feedback.vue"),
+        meta: { menuIndex: '/teacher/feedback' }
       }
     ]
   },
@@ -50,21 +117,21 @@ const router = createRouter({
 
 export default router;
 
-// 全局路由守卫
-router.beforeEach((to, from, next) => {
-  if (to.matched.length == 0) {
-    next("/404");
-  }
-  if (to.fullPath.includes("login") | to.fullPath.includes("register")) {
-    next();
-  } else if (localStorage.getItem("user_info")) {
-    let user_info = JSON.parse(localStorage.getItem("user_info"));
-    if (to.fullPath.includes("admin") & (user_info.is_admin == 0)) {
-      next("/404");
-    } else {
-      next(); // 已登录,允许访问
-    }
-  } else {
-    next("/login"); // 未登录,重定向到登录页
-  }
-});
+// // 全局路由守卫
+// router.beforeEach((to, from, next) => {
+//   if (to.matched.length == 0) {
+//     next("/404");
+//   }
+//   if (to.fullPath.includes("login") | to.fullPath.includes("register")) {
+//     next();
+//   } else if (localStorage.getItem("user_info")) {
+//     let user_info = JSON.parse(localStorage.getItem("user_info"));
+//     if (to.fullPath.includes("admin") & (user_info.is_admin == 0)) {
+//       next("/404");
+//     } else {
+//       next(); // 已登录,允许访问
+//     }
+//   } else {
+//     next("/login"); // 未登录,重定向到登录页
+//   }
+// });

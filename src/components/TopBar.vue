@@ -8,13 +8,26 @@
       <el-tab-pane label="主页" name="home"></el-tab-pane>
       <el-tab-pane label="心理测评" name="exam"></el-tab-pane>
       <el-tab-pane label="公告信息" name="announcement"></el-tab-pane>
-      <el-tab-pane label="心理文章" name="exam"></el-tab-pane>
-      <el-tab-pane label="预约中心" name="exam"></el-tab-pane>
-      <el-tab-pane label="资讯专栏" name="exam"></el-tab-pane>
-      <el-tab-pane label="留言反馈" name="exam"></el-tab-pane>
+      <el-tab-pane label="心理文章" name="new"></el-tab-pane>
+      <el-tab-pane label="预约中心" name="book"></el-tab-pane>
+      <el-tab-pane label="咨询专栏" name="consult"></el-tab-pane>
       <!-- Add more tabs as needed -->
     </el-tabs>
-    <div class="user-info">{{ userInfo }}</div>
+    <div class="user-info">
+    <el-dropdown trigger="click">
+      <span class="el-dropdown-link">
+        <el-avatar :size="40" :src="require('@/assets/user.jpg')"></el-avatar>
+      </span>
+      <template #dropdown>
+        <el-dropdown-menu>
+          <el-dropdown-item @click="handlePush('user')">个人中心</el-dropdown-item>
+          <el-dropdown-item @click="handlePush('star')">我的收藏</el-dropdown-item>
+          <el-dropdown-item>评价</el-dropdown-item>
+          <el-dropdown-item @click="handleOut">退出</el-dropdown-item>
+        </el-dropdown-menu>
+      </template>
+    </el-dropdown>
+  </div>
   </div>
 </template>
 
@@ -48,6 +61,14 @@ export default {
       this.activeTab = tab.props.name
       this.$router.push('/'+tab.props.name)
     },
+
+    handlePush(name) {
+      this.$router.push('/'+name)
+    },
+
+    handleOut() {
+      
+    }
   },
 };
 </script>
