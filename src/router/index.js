@@ -88,7 +88,37 @@ const routes = [
         name: 'Feedback',
         component: () => import("@/views/teacher/Feedback.vue"),
         meta: { menuIndex: '/teacher/feedback' }
-      }
+      },
+      {
+        path: "user",
+        name: "User",
+        component: () => import("@/views/teacher/User.vue")
+      },
+    ]
+  },
+  // 管理员部分
+  {
+    path: '/admin',
+    component: () => import("@/components/AdminLayout.vue"),
+    children: [
+      {
+        path: '',
+        name: 'Dashboard',
+        component: () => import("@/views/admin/Dashboard.vue"),
+        meta: { menuIndex: '/admin' }
+      },
+      {
+        path: 'userData',
+        name: 'UserData',
+        component: () => import("@/views/admin/UserData.vue"),
+        meta: { menuIndex: '/admin/userData' }
+      },
+      {
+        path: 'consultData',
+        name: 'ConsultData',
+        component: () => import("@/views/admin/ConsultData.vue"),
+        meta: { menuIndex: '/admin/consultData' }
+      },
     ]
   },
   {

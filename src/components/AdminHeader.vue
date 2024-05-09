@@ -1,7 +1,7 @@
 <template>
-  <div class="teacher-header">
+  <div class="admin-header">
     <div class="logo">
-      <span>大学生心理健康系统 - 教师版块</span>
+      <span>大学生心理健康系统 - 管理员版块</span>
     </div>
     <div class="user-info">
       <el-dropdown trigger="click">
@@ -10,7 +10,7 @@
         </span>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item @click="handlePush('teacher/user')">个人中心</el-dropdown-item>
+            <el-dropdown-item @click="handlePush('admin/user')">个人中心</el-dropdown-item>
             <el-dropdown-item @click="handlePush('star')">我的收藏</el-dropdown-item>
             <el-dropdown-item>评价</el-dropdown-item>
             <el-dropdown-item @click="handleOut">退出</el-dropdown-item>
@@ -41,7 +41,7 @@ export default {
 </script>
 
 <style scoped>
-.teacher-header {
+.admin-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
