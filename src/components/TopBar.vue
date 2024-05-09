@@ -5,7 +5,7 @@
       <span>{{ websiteName }}</span>
     </div>
     <el-tabs v-model="activeTab" @tab-click="handleTabClick">
-      <el-tab-pane label="主页" name="home"></el-tab-pane>
+      <el-tab-pane label="主页" name=""></el-tab-pane>
       <el-tab-pane label="心理测评" name="exam"></el-tab-pane>
       <el-tab-pane label="公告信息" name="announcement"></el-tab-pane>
       <el-tab-pane label="心理文章" name="new"></el-tab-pane>

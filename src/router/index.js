@@ -8,7 +8,7 @@ const routes = [
     component: () => import('@/views/student/index.vue'),
     children: [
       {
-        path: "/home",
+        path: "",
         name: "home",
         component: () => import('@/views/student/Home.vue')
       },
@@ -61,7 +61,7 @@ const routes = [
     children: [
       {
         path: '',
-        name: 'Dashboard',
+        name: 'index',
         component: () => import("@/views/teacher/Dashboard.vue"),
         meta: { menuIndex: '/teacher' }
       },
@@ -93,7 +93,7 @@ const routes = [
         path: "user",
         name: "User",
         component: () => import("@/views/teacher/User.vue")
-      },
+      }
     ]
   },
   // 管理员部分
