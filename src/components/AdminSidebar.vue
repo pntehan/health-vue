@@ -20,20 +20,16 @@
         <el-icon><setting /></el-icon>
         <span>心理数据统计</span>
       </el-menu-item>
-      <el-menu-item index="/admin/consult">
+      <el-menu-item index="/admin/systemData">
         <el-icon><ChatLineSquare /></el-icon>
-        <span>咨询管理</span>
-      </el-menu-item>
-      <el-menu-item index="/admin/feedback">
-        <el-icon><MessageBox /></el-icon>
-        <span>咨询管理</span>
+        <span>系统数据统计</span>
       </el-menu-item>
     </el-menu>
   </div>
 </template>
 
 <script>
-import { Document, Menu as IconMenu, Setting, ChatLineSquare, MessageBox } from '@element-plus/icons-vue'
+import { Document, Menu as IconMenu, Setting, ChatLineSquare } from '@element-plus/icons-vue'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -42,8 +38,7 @@ export default {
     Document,
     IconMenu,
     Setting,
-    ChatLineSquare,
-    MessageBox
+    ChatLineSquare
   },
 
   setup() {

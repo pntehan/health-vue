@@ -119,6 +119,12 @@ const routes = [
         component: () => import("@/views/admin/ConsultData.vue"),
         meta: { menuIndex: '/admin/consultData' }
       },
+      {
+        path: 'systemData',
+        name: 'SystemData',
+        component: () => import("@/views/admin/SystemData.vue"),
+        meta: { menuIndex: '/admin/systemData' }
+      },
     ]
   },
   {
