@@ -39,7 +39,7 @@
 
 <script>
 import { User, Key } from '@element-plus/icons-vue'
-import { login } from '@/api/Student.js';
+import { login } from '@/api/Student.js'
 
 export default {
   components: {
@@ -67,41 +67,23 @@ export default {
   methods: {
     //登录
     submitForm() {
-        let params = {
-          id: this.form.id,
-          password: this.form.password,
-        };
-        login(params).then((res) => {
-          let { data, status, msg } = res;
+      let params = {
+        id: this.form.id,
+        password: this.form.password,
+      }
+      login(params).then((res) => {
+          let { data, status, msg } = res
+          localStorage.setItem('user_info', JSON.stringify(data))
           if (status == '200') {
-            this.$message.success('登录成功');
-            // console.log(res);
-            this.$store.commit('saveUserInfo', res);
-
-            localStorage.setItem('ms_user_id', data.id);
-            localStorage.setItem('ms_user_type', data.type);
-            localStorage.setItem('ms_username', data.username);
-            localStorage.setItem('ms_user_status', data.status);
-            localStorage.setItem('ms_user_detail', data.detail);
-            localStorage.setItem('ms_user_email', data.email);
-            localStorage.setItem('ms_user_image', data.image);
-            localStorage.setItem('ms_user_last_local', data.last_local);
-            localStorage.setItem('ms_user_last_login_time', data.last_login_time);
-
-            let accessToken = res.access_token;
-            localStorage.setItem('accessToken', accessToken); // 用localStorage缓存token值
-            if (data.type === 'admin') {
-              this.$router.push('/admin');
-            } else {
-              this.$router.push('/user');
-            }
+            this.$message.success('登录成功')
+            this.$router.push('/teacher')
           } else {
-            this.$message.error('登录失败:' + msg);
+            this.$message.error('登录失败:' + msg)
           }
       })
       .catch((error) => {
-        this.$message.error('登录失败!' + error);
-      });
+        this.$message.error('登录失败!' + error)
+      })
     },
   }
 };

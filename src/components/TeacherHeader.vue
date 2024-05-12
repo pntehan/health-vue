@@ -34,7 +34,8 @@ export default {
     },
 
     handleOut() {
-      
+      localStorage.clear()
+      this.$router.push('/t_login')
     }
   }
 }
