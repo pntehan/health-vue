@@ -5,7 +5,13 @@
     </div>
     <div class="demo-collapse" style="margin-top: 20px;">
       <el-collapse>
-        <el-collapse-item v-for="item in item_list" :title="item.title" :name="item.id" :key="item.id">
+        <el-collapse-item v-for="item in item_list" :name="item.id" :key="item.id">
+          <template #title>
+            <div style="display: flex; justify-content: space-between; width: 100%;">
+              <span>{{ item.title }}</span>
+              <span>{{ item.up_time }}</span>
+            </div>
+          </template>
           <div>
             {{ item.content }}
           </div>
@@ -19,35 +25,23 @@
 </template>
 
 <script>
+import { initAnnouncement } from '@/api/Student'
+
 export default {
   data() {
     return {
-      all_list: [
-        { id: 0, title: '公告一', intro: '简介', content: '内容' },
-        { id: 1, title: '公告二', intro: '简介', content: '内容' },
-        { id: 2, title: '公告三', intro: '简介', content: '内容' },
-        { id: 3, title: '公告四', intro: '简介', content: '内容' },
-        { id: 4, title: '公告五', intro: '简介', content: '内容' },
-        { id: 5, title: '公告六', intro: '简介', content: '内容' },
-        { id: 6, title: '公告七', intro: '简介', content: '内容' },
-        { id: 7, title: '公告八', intro: '简介', content: '内容' },
-        { id: 8, title: '公告九', intro: '简介', content: '内容' },
-        { id: 9, title: '公告十', intro: '简介', content: '内容' },
-        { id: 10, title: '公告十一', intro: '简介', content: '内容' },
-        { id: 11, title: '公告十二', intro: '简介', content: '内容' },
-        { id: 12, title: '公告十三', intro: '简介', content: '内容' },
-        { id: 13, title: '公告十四', intro: '简介', content: '内容' },
-        { id: 14, title: '公告十五', intro: '简介', content: '内容' },
-        { id: 15, title: '公告十六', intro: '简介', content: '内容' }
-      ],
+      all_list: [],
       item_list: []
     };
   },
 
   mounted() {
-    for (let i=0; i<10; i++) {
-      this.item_list.push(this.all_list[i])
-    }
+    this.$emit('change-value', 'announcement')
+    initAnnouncement().then((res) => {
+      this.all_list = res.data
+      this.all_list.sort((a, b) => new Date(b.up_time) - new Date(a.up_time))
+      this.pageChange(1)
+    })
   },
 
   methods: {
@@ -58,6 +52,17 @@ export default {
         if (ind >= this.all_list.length) {
           break
         }
+        // 将字符串转换为 Date 对象
+        let dateTime = new Date(this.all_list[ind].up_time)
+        // 获取年月日
+        let year = dateTime.getFullYear()
+        let month = String(dateTime.getMonth() + 1).padStart(2, '0')
+        let day = String(dateTime.getDate()).padStart(2, '0')
+        // 获取小时分钟秒
+        let hours = String(dateTime.getHours()).padStart(2, '0')
+        let minutes = String(dateTime.getMinutes()).padStart(2, '0')
+        let seconds = String(dateTime.getSeconds()).padStart(2, '0')
+        this.all_list[ind].up_time = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
         this.item_list.push(this.all_list[ind])
       }
     }

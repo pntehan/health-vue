@@ -6,12 +6,12 @@
         <el-tab-pane label="收藏文章" name="articles">
           <el-row :gutter="20">
             <el-col :span="8" v-for="article in favoriteArticles" :key="article.id">
-              <el-card class="favorite-card">
+              <el-card class="favorite-card" @click="this.$router.push('/new/'+article.article_id)">
                 <div class="card-header">
                   <h3>{{ article.title }}</h3>
                   <el-button type="text" @click="unfavoriteArticle(article.id)">取消收藏</el-button>
                 </div>
-                <p>{{ article.excerpt }}</p>
+                <p>{{ article.content.split('&&')[0] + '......' }}</p>
               </el-card>
             </el-col>
           </el-row>
@@ -24,7 +24,7 @@
                   <h3>{{ teacher.name }}</h3>
                   <el-button type="text" @click="unfavoriteTeacher(teacher.id)">取消收藏</el-button>
                 </div>
-                <p>{{ teacher.description }}</p>
+                <p>{{ teacher.intro }}</p>
               </el-card>
             </el-col>
           </el-row>
@@ -35,21 +35,26 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue'
+import { initStar } from '@/api/Student'
 
 export default defineComponent({
-  setup() {
+  setup(props, { emit }) {
+    emit('change-value', '')
+
     const activeName = ref('articles')
-    const favoriteArticles = ref([
-      { id: 1, title: '文章标题 1', excerpt: '文章摘要 1' },
-      { id: 2, title: '文章标题 2', excerpt: '文章摘要 2' },
-      { id: 3, title: '文章标题 3', excerpt: '文章摘要 3' }
-    ])
-    const favoriteTeachers = ref([
-      { id: 1, name: '老师姓名 1', description: '老师简介 1' },
-      { id: 2, name: '老师姓名 2', description: '老师简介 2' },
-      { id: 3, name: '老师姓名 3', description: '老师简介 3' }
-    ])
+    const favoriteArticles = ref([])
+    const favoriteTeachers = ref([])
+
+    onMounted(() => {
+      let user_info = JSON.parse(localStorage.getItem('user_info'))
+      initStar({student_id: user_info.id}).then((res) => {
+        favoriteArticles.value = res.articles
+        favoriteArticles.value.sort((a, b) => new Date(b.up_time) - new Date(a.up_time))
+        favoriteTeachers.value = res.teachers
+        favoriteTeachers.value.sort((a, b) => new Date(b.up_time) - new Date(a.up_time))
+      })
+    })
 
     const unfavoriteArticle = (id) => {
       // 取消收藏文章的逻辑

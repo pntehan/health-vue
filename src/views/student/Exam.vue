@@ -41,31 +41,80 @@
           <h2>评测得分: {{ f_score }}</h2>
           <el-progress type="circle" :percentage="f_score" />
         </template>
+        <!-- 历史记录 -->
+        <h3>历史测评记录</h3>
+        <el-table :data="tableData" style="width: 100%" max-height="200">
+          <el-table-column prop="score" label="分数" width="120" />
+          <el-table-column prop="teacher_comment" label="教师评语" show-overflow-tooltip>
+            <template #default="scope">
+              <span v-if="scope.row.teacher_comment">{{ scope.row.teacher_comment }}</span>
+              <span v-else>暂无评语</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="warning_info" label="警示信息" show-overflow-tooltip>
+            <template #default="scope">
+              <span v-if="scope.row.teacher_comment">{{ scope.row.warning_info }}</span>
+              <span v-else>暂无预警</span>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-pagination
+          :current-page="currentPage"
+          :page-size="pageSize"
+          :total="totalItems"
+          layout="prev, pager, next"
+          @current-change="handleCurrentChange"
+        />
       </el-card>
     </div>
   </div>
 </template>
 
 <script>
+import { initExam, getRecords, addRecord } from '@/api/Student.js'
+
 export default {
   data() {
     return {
-      data_list: [
-        { id: 0, question: '你感到孤单吗？', answer: '' },
-        { id: 1, question: '你感到孤单吗？', answer: '' },
-        { id: 2, question: '你感到孤单吗？', answer: '' },
-        { id: 3, question: '你感到孤单吗？', answer: '' }
-      ],
+      data_list: [],
       options: ['很符合', '比较符合', '没有感觉', '不太符合', '不符合'],
       scores: [10, 8, 6, 3, 0],
-      f_score: 0
+      f_score: 0,
+      allTableData: [],
+      tableData: [],
+      currentPage: 1,
+      pageSize: 3,
+      totalItems: 1,
     };
   },
 
   mounted() {
+    this.$emit('change-value', 'exam')
+    initExam().then((res) => {
+      this.data_list = res.data
+    })
+    // 取值
+    let user_info = JSON.parse(localStorage.getItem('user_info'))
+    getRecords({ student_id: user_info.id }).then((res) => {
+      this.allTableData = res.data
+      this.totalItems = res.data.length
+      this.handleCurrentChange(1)
+    })
   },
 
   methods: {
+    handleCurrentChange(index) {
+      this.currentPage = index
+      this.tableData = []
+      for (let i=0; i<this.pageSize; i++) {
+        let ind = (this.currentPage-1)*this.pageSize + i
+        if (ind >= this.totalItems) {
+          break
+        }
+        this.tableData.push(this.allTableData[ind])
+      }
+    },
+
     calcScore() {
       // 校验空值
       let score = 0
@@ -82,6 +131,14 @@ export default {
       // 计算得分
       let total = 10 * this.data_list.length
       this.f_score = (score / total * 100).toFixed(2)
+      // 提交结果到后端
+      let user_info = JSON.parse(localStorage.getItem('user_info'))
+      addRecord({ student_id: user_info.id, score: this.f_score }).then((res) => {
+        this.allTableData = res.data
+        this.totalItems = res.data.length
+        this.currentPage = 1
+        this.handleCurrentChange()
+      })
     }
   }
 }

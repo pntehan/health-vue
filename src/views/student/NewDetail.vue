@@ -4,20 +4,28 @@
       <el-icon><Back /></el-icon>
       <span>返回</span>
     </div>
-    <el-card>
-      <img :src="article.cover" class="article-cover" />
+    <el-card style="margin-bottom: 100px;">
+      <img :src="'data:image/jpeg;base64,'+article.cover" class="article-cover" />
       <h1 class="article-title">{{ article.title }}</h1>
       <div class="article-meta">
-        <span>作者:{{ article.author }}</span>
-        <span>发布时间:{{ article.date }}</span>
+        <span>发布时间: {{ article.up_time }}</span>
       </div>
-      <div class="article-content" v-html="article.content"></div>
+      <div class="article-content" v-for="p in article.content" :key="p">
+        <p>{{ p }}</p>
+      </div>
+      <el-button :icon="Star" @click="starArticle" circle />
     </el-card>
   </div>
 </template>
 
+<script setup>
+import { Star } from '@element-plus/icons-vue'
+</script>
+
 <script>
 import { Back } from '@element-plus/icons-vue'
+import { getArticle, addStarArticle } from '@/api/Student.js'
+import { ElMessage } from 'element-plus';
 
 export default {
   components: {
@@ -27,18 +35,56 @@ export default {
   data() {
     return {
       article: {
-        title: '文章标题',
-        cover: require('@/assets/logo.png'),
-        author: '作者名',
-        date: '2023-05-08',
-        content: '<p>这里是文章内容...</p>'
+        id: 0,
+        title: '',
+        cover: '',
+        up_time: '',
+        content: []
       }
     }
+  },
+
+  mounted() {
+    this.$emit('change-value', 'new')
+    let id = this.$route.params.id
+    getArticle({ id: id }).then((res) => {
+      this.article.id = res.data.id
+      this.article.title = res.data.title
+      this.article.cover = res.data.cover
+      // 将字符串转换为 Date 对象
+      let dateTime = new Date(res.data.up_time)
+      // 获取年月日
+      let year = dateTime.getFullYear()
+      let month = String(dateTime.getMonth() + 1).padStart(2, '0')
+      let day = String(dateTime.getDate()).padStart(2, '0')
+      // 获取小时分钟秒
+      let hours = String(dateTime.getHours()).padStart(2, '0')
+      let minutes = String(dateTime.getMinutes()).padStart(2, '0')
+      let seconds = String(dateTime.getSeconds()).padStart(2, '0')
+      this.article.up_time = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+      this.article.content = res.data.content.split('&&')
+    })
   },
 
   methods: {
     goBack() {
       this.$router.go(-1)
+    },
+
+    starArticle() {
+      let user_info = JSON.parse(localStorage.getItem('user_info'))
+      let params = {
+        student_id: user_info.id,
+        article_id: this.article.id
+      }
+      addStarArticle(params).then((res) => {
+        if (res.status == 200) {
+          ElMessage.success('您已成功收藏该文章~')
+        }
+        else {
+          ElMessage.warning('您以及收藏过该文章了哦~')
+        }
+      })
     }
   }
 }

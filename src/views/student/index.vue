@@ -1,7 +1,7 @@
 <template>
   <div>
     <top-bar :websiteName="websiteName" :tabName="tabName" :userInfo="userInfo" />
-    <router-view class="container"></router-view>
+    <router-view class="container" @change-value="handleChangeValue"></router-view>
     <bottom-bar :websiteInfo="websiteInfo" />
   </div>
 </template>
@@ -25,6 +25,11 @@ export default {
   },
   mounted() {
     this.tabName = this.$route.name
+  },
+  methods: {
+    handleChangeValue(newValue) {
+      this.tabName = newValue
+    }
   }
 };
 </script>

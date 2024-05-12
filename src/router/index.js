@@ -4,11 +4,11 @@ const routes = [
   // 学生部分
   {
     path: '/',
-    name: '用户',
+    name: 'student',
     component: () => import('@/views/student/index.vue'),
     children: [
       {
-        path: "",
+        path: "/home",
         name: "home",
         component: () => import('@/views/student/Home.vue')
       },
@@ -58,6 +58,7 @@ const routes = [
   {
     path: '/teacher',
     component: () => import("@/components/TeacherLayout.vue"),
+    name: 'teacher',
     children: [
       {
         path: '',
@@ -100,6 +101,7 @@ const routes = [
   {
     path: '/admin',
     component: () => import("@/components/AdminLayout.vue"),
+    name: 'admin',
     children: [
       {
         path: '',
@@ -127,10 +129,26 @@ const routes = [
       },
     ]
   },
+  // 公共部分
   {
     path: "/404",
-    name: "404界面",
+    name: "404",
     component: () => import("@/views/BanView.vue")
+  },
+  {
+    path: "/s_login",
+    name: "s_login",
+    component: () => import("@/views/student/Login.vue")
+  },
+  {
+    path: "/t_login",
+    name: "t_login",
+    component: () => import("@/views/teacher/Login.vue")
+  },
+  {
+    path: "/a_login",
+    name: "a_login",
+    component: () => import("@/views/admin/Login.vue")
   }
 ];
 
@@ -153,21 +171,42 @@ const router = createRouter({
 
 export default router;
 
-// // 全局路由守卫
-// router.beforeEach((to, from, next) => {
-//   if (to.matched.length == 0) {
-//     next("/404");
-//   }
-//   if (to.fullPath.includes("login") | to.fullPath.includes("register")) {
-//     next();
-//   } else if (localStorage.getItem("user_info")) {
-//     let user_info = JSON.parse(localStorage.getItem("user_info"));
-//     if (to.fullPath.includes("admin") & (user_info.is_admin == 0)) {
-//       next("/404");
-//     } else {
-//       next(); // 已登录,允许访问
-//     }
-//   } else {
-//     next("/login"); // 未登录,重定向到登录页
-//   }
-// });
+// 全局路由守卫
+router.beforeEach((to, from, next) => {
+  if (to.fullPath.includes("404")) {
+    next()
+  }
+  if (to.matched.length == 0) {
+    next("/404")
+  }
+  if (to.fullPath.includes("login") | to.fullPath.includes("register")) {
+    next()
+  } 
+  else if (localStorage.getItem("user_info")) {
+    let user_info = JSON.parse(localStorage.getItem("user_info"))
+    // 教师检查
+    if (to.fullPath.includes("teacher")) {
+      if (user_info.role == "老师") {
+        next()
+      }
+      else {
+        next("/404")
+      }
+    }
+    // 管理员检查
+    else if (to.fullPath.includes("admin")) {
+      if (user_info.role == "管理员") {
+        next()
+      }
+      else {
+        next("/404")
+      }
+    }
+    else {
+      next()
+    }
+  }
+  else {
+    next("/s_login")
+  }
+})

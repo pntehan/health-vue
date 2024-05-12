@@ -6,13 +6,12 @@
     <div class="article-list" style="margin-top: 20px;">
       <el-row :gutter="20">
         <el-col :span="8" v-for="(article, index) in articles" :key="index">
-          <el-card :body-style="{ padding: '0px' }" shadow="hover" style="margin: 10px">
-            <img :src="article.cover" class="article-cover" />
+          <el-card :body-style="{ padding: '0px' }" shadow="hover" style="margin: 10px" @click="toDetail(article.id)">
+            <img :src="'data:image/jpeg;base64,'+article.cover" class="article-cover" />
             <div class="article-content">
-              <h3 class="article-title" @click="toDetail(article.title)">{{ article.title }}</h3>
-              <p class="article-excerpt">{{ article.excerpt }}</p>
+              <h3 class="article-title">{{ article.title }}</h3>
+              <p class="article-excerpt">{{ article.content }}</p>
               <div class="article-meta">
-                <span>{{ article.author }}</span>
                 <span>{{ article.date }}</span>
               </div>
             </div>
@@ -24,55 +23,35 @@
 </template>
 
 <script>
+import { getArticles } from '@/api/Student.js'
+
 export default {
   data() {
     return {
-      articles: [
-        {
-          title: '文章标题1',
-          excerpt: '文章摘要1...',
-          cover: require('@/assets/logo.png'),
-          author: '作者1',
-          date: '2023-05-08'
-        },
-        {
-          title: '文章标题1',
-          excerpt: '文章摘要1...',
-          cover: require('@/assets/logo.png'),
-          author: '作者1',
-          date: '2023-05-08'
-        },
-        {
-          title: '文章标题1',
-          excerpt: '文章摘要1...',
-          cover: require('@/assets/logo.png'),
-          author: '作者1',
-          date: '2023-05-08'
-        },
-        {
-          title: '文章标题1',
-          excerpt: '文章摘要1...',
-          cover: require('@/assets/logo.png'),
-          author: '作者1',
-          date: '2023-05-08'
-        },
-        {
-          title: '文章标题1',
-          excerpt: '文章摘要1...',
-          cover: require('@/assets/logo.png'),
-          author: '作者1',
-          date: '2023-05-08'
-        },
-        {
-          title: '文章标题1',
-          excerpt: '文章摘要1...',
-          cover: require('@/assets/logo.png'),
-          author: '作者1',
-          date: '2023-05-08'
-        }
-        // ...其他文章数据
-      ]
+      articles: []
     }
+  },
+
+  mounted() {
+    this.$emit('change-value', 'new')
+    getArticles().then((res) => {
+      this.articles = res.data
+      this.articles.sort((a, b) => new Date(b.up_time) - new Date(a.up_time))
+      for(let i=0; i<this.articles.length; i++) {
+        // 将字符串转换为 Date 对象
+        let dateTime = new Date(this.articles[i].up_time)
+        // 获取年月日
+        let year = dateTime.getFullYear()
+        let month = String(dateTime.getMonth() + 1).padStart(2, '0')
+        let day = String(dateTime.getDate()).padStart(2, '0')
+        // 获取小时分钟秒
+        let hours = String(dateTime.getHours()).padStart(2, '0')
+        let minutes = String(dateTime.getMinutes()).padStart(2, '0')
+        let seconds = String(dateTime.getSeconds()).padStart(2, '0')
+        this.articles[i].up_time = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+        this.articles[i].content = this.articles[i].content.split('&&')[0] + '......'
+      }
+    })
   },
 
   methods: {
